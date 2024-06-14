@@ -19,7 +19,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         production: f64,
     }
 
-    
     let mut all_energy: Vec<Energy> = vec![];
 
     // Reading and deserializing CSV records
@@ -52,7 +51,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Calculate production by years
     let mut production_by_years: HashMap<String, f64> = HashMap::new();
     for energy in all_energy.iter() {
-    
         let year = energy.date.split('-').next().unwrap_or("").to_string();
         let years = production_by_years.entry(year).or_insert(0.0);
         *years += energy.production;
@@ -60,6 +58,21 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     for (year, production) in &production_by_years {
         println!("{}: {} GWh", year, production);
+    }
+
+    // Calculate production by months
+    let mut production_by_months: HashMap<String, f64> = HashMap::new();
+    for energy in all_energy.iter() {
+        let month = match energy.date.split('-').collect::<Vec<&str>>().get(1) {
+            Some(month) => month.to_string(),
+            None => "".to_string(),
+        };
+        let months = production_by_months.entry(month).or_insert(0.0);
+        *months += energy.production;
+    }
+
+    for (month, production) in &production_by_months {
+        println!("{}: {} GWh", month, production);
     }
 
     Ok(())

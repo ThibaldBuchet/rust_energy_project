@@ -82,5 +82,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         println!("The type of energy that produced the most across all years combined is {} with {} GWh", most_productive_energy_type, most_production);
     }
 
+
+    //Year with the most production
+
+    if let Some((most_productive_year, most_production)) = production_by_years.iter().max_by(|a, b| a.1.partial_cmp(b.1).unwrap_or(std::cmp::Ordering::Equal)) {
+        println!("The year with the most production is {} with {} GWh", most_productive_year, most_production);
+    }
+
     Ok(())
 }

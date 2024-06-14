@@ -34,13 +34,16 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
 
     // Compute total energy production
-    let total_production: f64 = all_energy.iter().map(|energy| energy.production).sum();
+    let total_production: f64 = all_energy
+        .iter()
+        .map(|energy| energy.production)
+        .sum();
     println!("Total energy production: {} GWh", total_production);
 
     // Calculate production by types of energy production
-    let mut production_by_type: HashMap<String, f64> = HashMap::new();
+    let mut production_by_type: HashMap<&String, f64> = HashMap::new();
     for energy in all_energy.iter() {
-        let counter = production_by_type.entry(energy.energy_type.clone()).or_insert(0.0);
+        let counter = production_by_type.entry(&energy.energy_type).or_insert(0.0);
         *counter += energy.production;
     }
 
@@ -77,9 +80,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     //Type of energy that produced the most all years combined
 
+
+    let most_productive =  production_by_type.iter().max_by(|a, b| a.1.partial_cmp(b.1).unwrap_or(std::cmp::Ordering::Equal));
     
-    if let Some((most_productive_energy_type, most_production)) = production_by_type.iter().max_by(|a, b| a.1.partial_cmp(b.1).unwrap_or(std::cmp::Ordering::Equal)) {
-        println!("The type of energy that produced the most across all years combined is {} with {} GWh", most_productive_energy_type, most_production);
+    match most_productive {
+        Some((most_productive_energy_type, most_production)) => println!("The type of energy that produced the most across all years combined is {} with {} GWh", most_productive_energy_type, most_production),
+        None => print!("Aucunne energie productiove")
     }
 
 

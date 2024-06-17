@@ -33,36 +33,36 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
     }
 
-    // Compute total energy production
+   // Compute total energy production
     let total_production: f64 = all_energy
-        .iter()
-        .map(|energy| energy.production)
-        .sum();
+    .iter()
+    .map(|energy| energy.production)
+    .sum();
     println!("Total energy production: {} GWh", total_production);
 
     // Calculate production by types of energy production
-    let mut production_by_type: HashMap<&String, f64> = HashMap::new();
-    for energy in all_energy.iter() {
-        let counter = production_by_type.entry(&energy.energy_type).or_insert(0.0);
+    let production_by_type: HashMap<&String, f64> = all_energy.iter().fold(HashMap::new(),
+    |mut map, energy| {
+        let counter = map.entry(&energy.energy_type).or_insert(0.0);
         *counter += energy.production;
-    }
+        map
+    });
 
-    for (energy_type, production) in &production_by_type {
-        println!("{}: {} GWh", energy_type, production);
-    }
+production_by_type.iter().for_each(|(energy_type, production)| {
+    println!("{}: {} GWh", energy_type, production);
+});
 
     // Calculate production by years
     let mut production_by_years: HashMap<String, f64> = HashMap::new();
-    for energy in all_energy.iter() {
+
+    all_energy.iter().for_each(|energy| {
         let year = energy.date.split('-').next().unwrap_or("").to_string();
-        let years = production_by_years.entry(year).or_insert(0.0);
-        *years += energy.production;
-    }
-
-    for (year, production) in &production_by_years {
+        *production_by_years.entry(year).or_insert(0.0) += energy.production;
+    });
+    
+    production_by_years.iter().for_each(|(year, production)| {
         println!("{}: {} GWh", year, production);
-    }
-
+    });
     // Calculate production by months
     let mut production_by_months: HashMap<String, f64> = HashMap::new();
     for energy in all_energy.iter() {

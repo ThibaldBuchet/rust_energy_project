@@ -65,18 +65,24 @@ production_by_type.iter().for_each(|(energy_type, production)| {
     });
     // Calculate production by months
     let mut production_by_months: HashMap<String, f64> = HashMap::new();
-    for energy in all_energy.iter() {
-        let month = match energy.date.split('-').collect::<Vec<&str>>().get(1) {
-            Some(month) => month.to_string(),
-            None => "".to_string(),
-        };
-        let months = production_by_months.entry(month).or_insert(0.0);
-        *months += energy.production;
-    }
 
-    for (month, production) in &production_by_months {
-        println!("{}: {} GWh", month, production);
-    }
+    all_energy.iter()
+        .map(|energy| {
+         
+            let month = energy.date.split('-').nth(1).unwrap_or("").to_string();
+            (month, energy.production)
+        })
+        .for_each(|(month, production)| {
+         
+            let months = production_by_months.entry(month).or_insert(0.0);
+            *months += production;
+        });
+
+ 
+    production_by_months.iter()
+        .for_each(|(month, production)| {
+            println!("{}: {} GWh", month, production);
+        });
 
     //Type of energy that produced the most all years combined
 

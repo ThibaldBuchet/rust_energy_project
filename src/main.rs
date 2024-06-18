@@ -38,6 +38,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let total_production: f64 = all_energy.iter().map(|energy| energy.production).sum();
     println!("Total energy production: {} GWh", total_production);
 
+
+    println!("-----------------------------------------------------------------------------------------------------");
+
+
     // Calculate production by types of energy production
     let production_by_type: HashMap<&String, f64> =
         all_energy.iter().fold(HashMap::new(), |mut map, energy| {
@@ -60,6 +64,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .iter()
         .for_each(|total| println!("Total production for {}, {} Gwh", total.0, total.1));
 
+    println!("-----------------------------------------------------------------------------------------------------");
+
+
     // Calculate production by years
     let mut production_by_years: HashMap<String, f64> = HashMap::new();
 
@@ -73,6 +80,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     });
 
     println!("-----------------------------------------------------------------------------------------------------");
+
+
     all_energy
         .iter()
         .into_grouping_map_by(|element| element.date.split('-').next().unwrap_or("").to_string())
@@ -80,6 +89,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .iter()
         .sorted_by(|a, b| a.0.parse::<u32>().unwrap().cmp(&b.0.parse::<u32>().unwrap()))
         .for_each(|total| println!("Total production for {}, {} Gwh", total.0, total.1));
+
+
+    println!("-----------------------------------------------------------------------------------------------------");
 
 
     // Calculate production by months
@@ -110,6 +122,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .sorted_by(|a, b| a.0.parse::<u32>().unwrap().cmp(&b.0.parse::<u32>().unwrap()))
         .for_each(|total| println!("Total production for {}, {} Gwh", total.0, total.1));
 
+    println!("-----------------------------------------------------------------------------------------------------");
+
+
     //Type of energy that produced the most all years combined
 
     let most_productive = production_by_type
@@ -123,6 +138,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         ),
         None => print!("Aucunne énergie productive"),
     }
+
+    println!("-----------------------------------------------------------------------------------------------------");
+
 
     //Year with the most production
 
